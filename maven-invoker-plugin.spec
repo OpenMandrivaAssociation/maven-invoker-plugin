@@ -1,6 +1,6 @@
 Name:           maven-invoker-plugin
 Version:        1.5
-Release:        4
+Release:        6
 Summary:        Maven Invoker Plugin
 
 Group:          Development/Java
