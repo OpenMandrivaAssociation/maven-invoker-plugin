@@ -1,7 +1,7 @@
 Summary:	Maven Invoker Plugin
 Name:		maven-invoker-plugin
 Version:	1.5
-Release:	7
+Release:	8
 Group:		Development/Java
 License:	ASL 2.0
 Url:		http://maven.apache.org/plugins/maven-invoker-plugin/
