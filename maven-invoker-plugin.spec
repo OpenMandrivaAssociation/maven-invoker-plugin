@@ -1,106 +1,130 @@
-Summary:	Maven Invoker Plugin
-Name:		maven-invoker-plugin
-Version:	1.5
-Release:	7
-Group:		Development/Java
-License:	ASL 2.0
-Url:		http://maven.apache.org/plugins/maven-invoker-plugin/
-# svn export http://svn.apache.org/repos/asf/maven/plugins/tags/maven-invoker-plugin-1.5 maven-invoker-plugin    
-# tar czf maven-invoker-plugin-1.5.tgz maven-invoker-plugin
-Source0:	maven-invoker-plugin-1.5.tgz
-BuildArch:	noarch
+%{?_javapackages_macros:%_javapackages_macros}
+Name:           maven-invoker-plugin
+Version:        1.8
+Release:        8.0%{?dist}
+Summary:        Maven Invoker Plugin
+License:        ASL 2.0
+URL:            http://maven.apache.org/plugins/maven-invoker-plugin/
+Source0:        http://repo2.maven.org/maven2/org/apache/maven/plugins/%{name}/%{version}/%{name}-%{version}-source-release.zip
+Patch0:         pom-xml.patch
+BuildArch: noarch
 
-# Basic stuff
-BuildRequires:	jpackage-utils
-BuildRequires:	java-devel >= 0:1.6.0
-# Maven and its dependencies
-BuildRequires:	maven2
-BuildRequires:	maven-resources-plugin
-BuildRequires:	maven-plugin-plugin
-BuildRequires:	maven-compiler-plugin
-BuildRequires:	maven-install-plugin
-BuildRequires:	maven-jar-plugin
-BuildRequires:	maven-doxia
-BuildRequires:	maven-doxia-tools
-BuildRequires:	maven-doxia-sitetools
-BuildRequires:	maven-surefire-provider-junit
-BuildRequires:	maven-surefire-maven-plugin
-BuildRequires:	maven-plugin-cobertura
-BuildRequires:	maven-javadoc-plugin
-BuildRequires:	maven-shared-invoker
-# Others
-BuildRequires:	groovy
+BuildRequires:  maven-local
+BuildRequires:  mvn(commons-io:commons-io)
+BuildRequires:  mvn(org.apache.ant:ant)
+BuildRequires:  mvn(org.apache.maven.doxia:doxia-sink-api)
+BuildRequires:  mvn(org.apache.maven.doxia:doxia-site-renderer)
+BuildRequires:  mvn(org.apache.maven.plugin-testing:maven-plugin-testing-harness)
+BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-plugins)
+BuildRequires:  mvn(org.apache.maven.reporting:maven-reporting-api)
+BuildRequires:  mvn(org.apache.maven.reporting:maven-reporting-impl)
+BuildRequires:  mvn(org.apache.maven.shared:maven-invoker)
+BuildRequires:  mvn(org.apache.maven.shared:maven-script-interpreter)
+BuildRequires:  mvn(org.apache.maven:maven-artifact)
+BuildRequires:  mvn(org.apache.maven:maven-core)
+BuildRequires:  mvn(org.apache.maven:maven-model)
+BuildRequires:  mvn(org.apache.maven:maven-plugin-api)
+BuildRequires:  mvn(org.apache.maven:maven-project)
+BuildRequires:  mvn(org.apache.maven:maven-settings)
+BuildRequires:  mvn(org.beanshell:bsh)
+BuildRequires:  mvn(org.codehaus.groovy:groovy)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-i18n)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-interpolation)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 
-Requires:	java
-Requires:	groovy
-Requires:	jpackage-utils
-Requires:	maven2
-Requires:	maven-shared-invoker
-Requires:	maven-shared-reporting-api
-Requires:	maven-shared-reporting-impl
-Requires(post,postun):	jpackage-utils
-
-Provides:	maven2-plugin-invoker = 1:%{version}-%{release}
-Obsoletes:	maven2-plugin-invoker <= 0:2.0.8
+Provides:       maven2-plugin-invoker = 1:%{version}-%{release}
+Obsoletes:      maven2-plugin-invoker <= 0:2.0.8
 
 %description
 The Maven Invoker Plugin is used to run a set of Maven projects. The plugin 
 can determine whether each project execution is successful, and optionally 
 can verify the output generated from a given project execution.
   
+
 %package javadoc
-Group:		Development/Java
-Summary:	Javadoc for %{name}
-Requires:	jpackage-utils
+Summary:        Javadoc for %{name}
 
 %description javadoc
 API documentation for %{name}.
 
 %prep
-%setup -qn %{name}
+%setup -q 
+%patch0
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mvn-jpp \
-	-e \
-	-Dmaven.test.skip=true \
-	-Dmaven2.jpp.mode=true \
-	-Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-	install javadoc:javadoc
+%mvn_build -f 
 
 %install
-# jars
-install -d -m 0755 %{buildroot}%{_javadir}
-install -m 644 target/%{name}-%{version}.jar   %{buildroot}%{_javadir}/%{name}-%{version}.jar
+%mvn_install
 
-(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; \
-	do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+%files -f .mfiles
+%doc LICENSE NOTICE
 
-%add_to_maven_depmap org.apache.maven.plugins maven-invoker-plugin %{version} JPP maven-invoker-plugin
+%files javadoc -f .mfiles-javadoc
+%doc LICENSE NOTICE
 
-# poms
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml \
-	%{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%changelog
+* Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-8
+- Update to current packaging guidelines
 
-# javadoc
-install -d -m 0755 %{buildroot}%{_javadocdir}/%{name}-%{version}
-cp -pr target/site/api*/* %{buildroot}%{_javadocdir}/%{name}-%{version}/
-ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
-rm -rf target/site/api*
+* Mon Aug 12 2013 Alexander Kurtakov <akurtako@redhat.com> 1.8-7
+- Build with xmvn.
 
-%post
-%update_maven_depmap
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
-%postun
-%update_maven_depmap
+* Tue Apr  9 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-5
+- Fix Requires and BuildRequires on Doxia; resolves: rhbz#950061
+- Remove unneeded BR
 
-%files
-%{_javadir}/*
-%{_mavenpomdir}/*
-%{_mavendepmapfragdir}/*
+* Sat Feb 16 2013 Michal Srb <msrb@redhat.com> - 1.8-4
+- Migrate from maven-doxia to doxia subpackages (Resolves: #909238)
+- Remove unnecessary BR on maven-doxia-tools
 
-%files javadoc
-%{_javadocdir}/%{name}-%{version}
-%{_javadocdir}/%{name}
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 1.8-2
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
+* Fri Jan 18 2013 Weinan Li <weli@redhat.com> 1.8-1
+- Upgrade to 1.8
+
+* Fri Jan 4 2013 David Xie <david.scriptfan@gmail.com> 1.7-2
+- Add LICENSE and NOTICE files.
+
+* Tue Oct 23 2012 Alexander Kurtakov <akurtako@redhat.com> 1.7-1
+- Update to latest upstream.
+
+* Tue Aug 21 2012 Tomas Radej <tradej@redhat.com> - 1.6-1
+- Updated to v1.6
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Thu Jun 9 2011 Alexander Kurtakov <akurtako@redhat.com> 1.5-5
+- Build with maven 3.x.
+- Use upstream source.
+- Guidelines fixes.
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Wed Jul 21 2010 Weinan Li <weli@redhat.com> -1.5-3
+- R: maven-shared-invoker
+- R: maven-shared-reporting-api
+- R: maven-shared-reporting-impl
+- Remove BR: maven2-plugin-changes
+- Add BR: maven-shared-invoker
+
+* Mon Jun 7 2010 Weinan Li <weli@redhat.com> - 1.5-2
+- Fix incoherent version in changelog
+- BR: maven-javadoc-plugin
+
+* Thu Jun 3 2010 Weinan Li <weli@redhat.com> - 1.5-1
+- Initial Package
