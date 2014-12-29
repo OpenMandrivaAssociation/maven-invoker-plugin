@@ -1,8 +1,9 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           maven-invoker-plugin
 Version:        1.8
-Release:        8.0%{?dist}
+Release:        13.1
 Summary:        Maven Invoker Plugin
+Group:		Development/Java
 License:        ASL 2.0
 URL:            http://maven.apache.org/plugins/maven-invoker-plugin/
 Source0:        http://repo2.maven.org/maven2/org/apache/maven/plugins/%{name}/%{version}/%{name}-%{version}-source-release.zip
@@ -16,7 +17,7 @@ BuildRequires:  mvn(org.apache.maven.doxia:doxia-sink-api)
 BuildRequires:  mvn(org.apache.maven.doxia:doxia-site-renderer)
 BuildRequires:  mvn(org.apache.maven.plugin-testing:maven-plugin-testing-harness)
 BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-plugins)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-plugins:pom:)
 BuildRequires:  mvn(org.apache.maven.reporting:maven-reporting-api)
 BuildRequires:  mvn(org.apache.maven.reporting:maven-reporting-impl)
 BuildRequires:  mvn(org.apache.maven.shared:maven-invoker)
@@ -29,12 +30,10 @@ BuildRequires:  mvn(org.apache.maven:maven-project)
 BuildRequires:  mvn(org.apache.maven:maven-settings)
 BuildRequires:  mvn(org.beanshell:bsh)
 BuildRequires:  mvn(org.codehaus.groovy:groovy)
+BuildRequires:  mvn(org.codehaus.modello:modello-maven-plugin)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-i18n)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-interpolation)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
-
-Provides:       maven2-plugin-invoker = 1:%{version}-%{release}
-Obsoletes:      maven2-plugin-invoker <= 0:2.0.8
 
 %description
 The Maven Invoker Plugin is used to run a set of Maven projects. The plugin 
