@@ -1,7 +1,7 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           maven-invoker-plugin
-Version:        1.8
-Release:        13.1
+Version:        1.9
+Release:        1.1
 Summary:        Maven Invoker Plugin
 Group:		Development/Java
 License:        ASL 2.0
