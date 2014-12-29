@@ -8,6 +8,7 @@ License:        ASL 2.0
 URL:            http://maven.apache.org/plugins/maven-invoker-plugin/
 Source0:        http://repo2.maven.org/maven2/org/apache/maven/plugins/%{name}/%{version}/%{name}-%{version}-source-release.zip
 Patch0:         pom-xml.patch
+Patch1:		maven-invoker-plugin-plexus-utils-3.0.18.patch
 BuildArch: noarch
 
 BuildRequires:  maven-local
@@ -50,6 +51,7 @@ API documentation for %{name}.
 %prep
 %setup -q 
 %patch0
+%patch1 -p1
 
 %build
 %mvn_build -f 

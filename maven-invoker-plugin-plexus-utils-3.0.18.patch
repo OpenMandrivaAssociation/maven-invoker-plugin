@@ -1,0 +1,20 @@
+--- maven-invoker-plugin-1.8/src/main/java/org/apache/maven/plugin/invoker/AbstractInvokerMojo.java.orig	2014-12-29 10:19:23.145190000 +0000
++++ maven-invoker-plugin-1.8/src/main/java/org/apache/maven/plugin/invoker/AbstractInvokerMojo.java	2014-12-29 10:19:39.154188821 +0000
+@@ -2185,7 +2185,7 @@
+         try
+         {
+             Map<String, Object> composite = getInterpolationValueSource();
+-            reader = new BufferedReader( new InterpolationFilterReader( newReader( tokenFile ), composite ) );
++            reader = new BufferedReader( new InterpolationFilterReader( newReader( tokenFile ), (Map)composite ) );
+ 
+             String line = null;
+             while ( ( line = reader.readLine() ) != null )
+@@ -2249,7 +2249,7 @@
+                 // interpolation with token @...@
+                 Map<String, Object> composite = getInterpolationValueSource();
+                 reader = ReaderFactory.newXmlReader( originalFile );
+-                reader = new InterpolationFilterReader( reader, composite, "@", "@" );
++                reader = new InterpolationFilterReader( reader, (Map)composite, "@", "@" );
+                 xml = IOUtil.toString( reader );
+             }
+             finally
