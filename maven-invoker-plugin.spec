@@ -5,7 +5,7 @@ Release:        1.4
 Summary:        Maven Invoker Plugin
 Group:		Development/Java
 License:        ASL 2.0
-URL:            http://maven.apache.org/plugins/maven-invoker-plugin/
+URL:            https://maven.apache.org/plugins/maven-invoker-plugin/
 Source0:        http://repo2.maven.org/maven2/org/apache/maven/plugins/%{name}/%{version}/%{name}-%{version}-source-release.zip
 Patch0:         pom-xml.patch
 Patch1:		maven-invoker-plugin-plexus-utils-3.0.18.patch
